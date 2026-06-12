@@ -1,0 +1,248 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.dashboard { display: grid; grid-template-columns: 320px 1fr; gap: 0; min-height: 720px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; background: var(--color-background-primary); }
+
+.sidebar { border-right: 0.5px solid var(--color-border-tertiary); padding: 1.25rem; display: flex; flex-direction: column; gap: 1.1rem; background: var(--color-background-secondary); overflow-y: auto; }
+
+.sidebar-header { display: flex; align-items: center; gap: 10px; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.sidebar-header i { font-size: 20px; color: var(--color-text-secondary); }
+.sidebar-header span { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+
+.step-block { display: flex; flex-direction: column; gap: 8px; }
+.step-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-secondary); font-weight: 500; letter-spacing: 0.03em; }
+.step-num { width: 18px; height: 18px; border-radius: 50%; background: var(--color-background-info); color: var(--color-text-info); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-num.done { background: var(--color-background-success); color: var(--color-text-success); }
+
+.env-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.chip:hover { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+.chip.active { background: #E6F1FB; color: #185FA5; border-color: #85B7EB; }
+
+.text-input-wrap { position: relative; }
+.text-input-wrap i.prefix { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--color-text-tertiary); pointer-events: none; }
+.text-input { width: 100%; padding: 9px 12px 9px 34px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 14px; font-family: var(--font-sans); outline: none; }
+.text-input:focus { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.12); }
+.text-input.filled { border-color: #85B7EB; }
+.input-hint { font-size: 11px; color: var(--color-text-tertiary); padding-left: 2px; }
+
+.date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.date-field { display: flex; flex-direction: column; gap: 4px; }
+.date-field label { font-size: 11px; color: var(--color-text-tertiary); }
+.date-input-wrap { position: relative; }
+.date-input-wrap i { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--color-text-tertiary); pointer-events: none; }
+.date-input { width: 100%; padding: 8px 8px 8px 30px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 12px; font-family: var(--font-sans); outline: none; }
+.date-input:focus { border-color: #378ADD; box-shadow: 0 0 0 3px rgba(55,138,221,0.12); }
+.date-input.filled { border-color: #85B7EB; }
+
+.quick-dates { display: flex; flex-wrap: wrap; gap: 5px; }
+.qchip { padding: 4px 10px; border-radius: 20px; font-size: 11px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.qchip:hover { border-color: var(--color-border-secondary); }
+.qchip.active { background: #E6F1FB; color: #185FA5; border-color: #85B7EB; }
+
+.submit-btn { width: 100%; padding: 10px; border-radius: var(--border-radius-md); border: none; background: #185FA5; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.submit-btn.disabled { background: var(--color-background-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border-tertiary); cursor: not-allowed; }
+
+.status-pill { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--border-radius-md); background: var(--color-background-success); border: 0.5px solid var(--color-border-success); font-size: 13px; color: var(--color-text-success); }
+
+.main-panel { display: flex; flex-direction: column; }
+.main-header { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); }
+.breadcrumb .sep { color: var(--color-text-tertiary); }
+.breadcrumb .current { color: var(--color-text-primary); font-weight: 500; }
+.toolbar { display: flex; align-items: center; gap: 8px; }
+.toolbar-btn { padding: 6px 10px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-secondary); font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.toolbar-btn i { font-size: 16px; }
+
+.file-list { flex: 1; padding: 0.75rem 1.25rem; display: flex; flex-direction: column; gap: 4px; }
+.file-list-header { display: grid; grid-template-columns: 1fr 90px 150px 90px; gap: 8px; padding: 6px 12px; font-size: 12px; color: var(--color-text-tertiary); font-weight: 500; }
+.file-row { display: grid; grid-template-columns: 1fr 90px 150px 90px; gap: 8px; padding: 10px 12px; border-radius: var(--border-radius-md); align-items: center; border: 0.5px solid transparent; cursor: pointer; }
+.file-row:hover { background: var(--color-background-secondary); border-color: var(--color-border-tertiary); }
+.file-row.highlighted { background: #E6F1FB; border-color: #85B7EB; }
+
+.file-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.file-name i { font-size: 18px; color: #378ADD; flex-shrink: 0; }
+.file-name span { font-size: 13px; color: var(--color-text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+.badge-success { background: var(--color-background-success); color: var(--color-text-success); }
+.badge-warning { background: var(--color-background-warning); color: var(--color-text-warning); }
+
+.file-meta { font-size: 12px; color: var(--color-text-secondary); }
+.dl-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-info); color: var(--color-text-info); font-size: 12px; font-weight: 500; background: transparent; cursor: pointer; white-space: nowrap; }
+.dl-btn i { font-size: 14px; }
+
+.footer-bar { padding: 0.75rem 1.25rem; border-top: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; }
+</style>
+
+<h2 class="sr-only">Ansible Log Downloader Dashboard — Sol panelde environment, sunucu adı, uygulama adı ve tarih aralığı giriş formu; sağ panelde log dosyası listesi</h2>
+
+<div class="dashboard">
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="ti ti-terminal-2" aria-hidden="true"></i>
+      <span>Log dosyası sorgula</span>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">
+        <div class="step-num done"><i class="ti ti-check" style="font-size:10px"></i></div>
+        Environment
+      </div>
+      <div class="env-chips">
+        <div class="chip active">Prod</div>
+        <div class="chip">Dev</div>
+        <div class="chip">Test</div>
+        <div class="chip">Lab</div>
+        <div class="chip">QA</div>
+      </div>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">
+        <div class="step-num done"><i class="ti ti-check" style="font-size:10px"></i></div>
+        Sunucu adı
+      </div>
+      <div class="text-input-wrap">
+        <i class="ti ti-server prefix" aria-hidden="true"></i>
+        <input class="text-input filled" type="text" placeholder="örn. web-prod-01" value="web-prod-01" />
+      </div>
+      <span class="input-hint">Sunucu hostname veya IP adresi</span>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">
+        <div class="step-num done"><i class="ti ti-check" style="font-size:10px"></i></div>
+        Uygulama adı
+      </div>
+      <div class="text-input-wrap">
+        <i class="ti ti-app-window prefix" aria-hidden="true"></i>
+        <input class="text-input filled" type="text" placeholder="örn. payment-service" value="payment-service" />
+      </div>
+      <span class="input-hint">Servis veya uygulama adı</span>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">
+        <div class="step-num done"><i class="ti ti-check" style="font-size:10px"></i></div>
+        Tarih aralığı
+      </div>
+      <div class="quick-dates">
+        <div class="qchip">Bugün</div>
+        <div class="qchip active">Son 7 gün</div>
+        <div class="qchip">Son 30 gün</div>
+        <div class="qchip">Özel</div>
+      </div>
+      <div class="date-row">
+        <div class="date-field">
+          <label>Başlangıç</label>
+          <div class="date-input-wrap">
+            <i class="ti ti-calendar" aria-hidden="true"></i>
+            <input class="date-input filled" type="date" value="2026-05-24" />
+          </div>
+        </div>
+        <div class="date-field">
+          <label>Bitiş</label>
+          <div class="date-input-wrap">
+            <i class="ti ti-calendar" aria-hidden="true"></i>
+            <input class="date-input filled" type="date" value="2026-05-31" />
+          </div>
+        </div>
+      </div>
+      <span class="input-hint">Log dosyaları bu aralıkta filtrelenir</span>
+    </div>
+
+    <button class="submit-btn">
+      <i class="ti ti-player-play" aria-hidden="true"></i>
+      Tamamla — logları getir
+    </button>
+
+    <div class="status-pill">
+      <i class="ti ti-circle-check" aria-hidden="true"></i>
+      4 log dosyası bulundu
+    </div>
+
+    <div style="margin-top: auto; padding-top: 1rem; border-top: 0.5px solid var(--color-border-tertiary);">
+      <p style="font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6;">
+        Seçilen ortamda Ansible playbook tetiklenir. Log dosyaları hazırlandıktan sonra sağ panelde listelenir.
+      </p>
+    </div>
+  </div>
+
+  <div class="main-panel">
+    <div class="main-header">
+      <div class="breadcrumb">
+        <i class="ti ti-folder" style="font-size:16px" aria-hidden="true"></i>
+        <span>Prod</span>
+        <span class="sep">/</span>
+        <span>web-prod-01</span>
+        <span class="sep">/</span>
+        <span>payment-service</span>
+        <span class="sep">/</span>
+        <span class="current">24 May – 31 May</span>
+      </div>
+      <div class="toolbar">
+        <button class="toolbar-btn"><i class="ti ti-refresh" aria-hidden="true"></i> Yenile</button>
+        <button class="toolbar-btn"><i class="ti ti-download" aria-hidden="true"></i> Tümünü indir</button>
+      </div>
+    </div>
+
+    <div class="file-list">
+      <div class="file-list-header">
+        <span>Dosya adı</span>
+        <span>Boyut</span>
+        <span>Tarih</span>
+        <span></span>
+      </div>
+
+      <div class="file-row highlighted">
+        <div class="file-name">
+          <i class="ti ti-file-text" aria-hidden="true"></i>
+          <span>payment-service.log</span>
+          <span class="badge badge-success">güncel</span>
+        </div>
+        <div class="file-meta">2.4 MB</div>
+        <div class="file-meta">31 May 2026, 09:41</div>
+        <button class="dl-btn"><i class="ti ti-download" aria-hidden="true"></i> İndir</button>
+      </div>
+
+      <div class="file-row">
+        <div class="file-name">
+          <i class="ti ti-file-alert" aria-hidden="true"></i>
+          <span>payment-service-error.log</span>
+          <span class="badge badge-warning">hata</span>
+        </div>
+        <div class="file-meta">148 KB</div>
+        <div class="file-meta">31 May 2026, 09:38</div>
+        <button class="dl-btn"><i class="ti ti-download" aria-hidden="true"></i> İndir</button>
+      </div>
+
+      <div class="file-row">
+        <div class="file-name">
+          <i class="ti ti-file-text" aria-hidden="true"></i>
+          <span>payment-service-access.log</span>
+        </div>
+        <div class="file-meta">8.1 MB</div>
+        <div class="file-meta">28 May 2026, 08:00</div>
+        <button class="dl-btn"><i class="ti ti-download" aria-hidden="true"></i> İndir</button>
+      </div>
+
+      <div class="file-row">
+        <div class="file-name">
+          <i class="ti ti-file-zip" aria-hidden="true"></i>
+          <span>payment-service-archive-20260524.gz</span>
+        </div>
+        <div class="file-meta">34.7 MB</div>
+        <div class="file-meta">24 May 2026, 23:59</div>
+        <button class="dl-btn"><i class="ti ti-download" aria-hidden="true"></i> İndir</button>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span style="font-size: 12px; color: var(--color-text-tertiary);">4 dosya · toplam 45.4 MB · 24 May – 31 May 2026</span>
+      <span style="font-size: 12px; color: var(--color-text-tertiary);">Ansible job: <code style="font-family: var(--font-mono); font-size: 11px;">job-a3f92c</code></span>
+    </div>
+  </div>
+
+</div>
